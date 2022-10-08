@@ -15,9 +15,15 @@ final class LoginViewController: UIViewController {
     
     private let hideIcon = UIImage(named: "hide")
     private let showIcon = UIImage(named: "show")
+    
+    private lazy var containerView = UIView().then {
+        $0.backgroundColor = .systemBackground
+    }
 
     private lazy var scrollview = UIScrollView().then {
-        $0.backgroundColor = .red
+        $0.alwaysBounceVertical = true
+        $0.isUserInteractionEnabled = true
+        $0.addSubview(containerView)
     }
     
     private lazy var phoneNumberStackView = InfoStackView(
@@ -90,9 +96,11 @@ final class LoginViewController: UIViewController {
         checkTextFieldInfo()
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.endEditing(true
-        )
+    override func touchesBegan(
+        _ touches: Set<UITouch>,
+        with event: UIEvent?
+    ) {
+        view.endEditing(true)
     }
 }
 
@@ -145,12 +153,12 @@ private extension LoginViewController {
             isSecureButton,
             loginButton,
             moveStackView
-        ].forEach { scrollview.addSubview($0) }
+        ].forEach { containerView.addSubview($0) }
 
         phoneNumberStackView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(34.0)
+            $0.top.equalTo(containerView.safeAreaLayoutGuide).offset(34.0)
             $0.leading.equalToSuperview().inset(16.0)
-            $0.trailing.equalToSuperview().offset(16.0)
+            $0.trailing.equalToSuperview().inset(16.0)
         }
 
         passwordStackView.snp.makeConstraints {
@@ -174,6 +182,18 @@ private extension LoginViewController {
             $0.top.equalTo(loginButton.snp.bottom).offset(34.0)
             $0.centerX.equalToSuperview()
             $0.height.equalTo(14.0)
+            $0.bottom.equalToSuperview()
+        }
+        
+        view.addSubview(scrollview)
+        
+        containerView.snp.makeConstraints {
+            $0.edges.equalTo(scrollview.contentLayoutGuide)
+            $0.width.equalTo(scrollview.frameLayoutGuide.snp.width)
+        }
+        
+        scrollview.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
     
@@ -242,12 +262,39 @@ private extension LoginViewController {
         isSecureButton.imageView?.image == hideIcon ?
         { [weak self] in
             self?.isSecureButton.setImage(self?.showIcon, for: .normal)
-            self?.passwordStackView.textField.isSecureTextEntry.toggle()
+            self?.passwordStackView.textField.isSecureTextEntry = false
         }()
         :
         {   [weak self] in
             self?.isSecureButton.setImage(self?.hideIcon, for: .normal)
-            self?.passwordStackView.textField.isSecureTextEntry.toggle()
+            self?.passwordStackView.textField.isSecureTextEntry = true
+//            self?.passwordStackView.textFi
         }()
     }
 }
+
+#if DEBUG
+
+import SwiftUI
+
+struct LoginViewControllerPresentable: UIViewControllerRepresentable {
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+    }
+    
+    func makeUIViewController(context: Context) -> some UIViewController {
+        LoginViewController()
+    }
+}
+
+
+struct LoginViewControllerPrepresentable_PreviewProvider : PreviewProvider {
+    static var previews: some View {
+        LoginViewControllerPresentable()
+            .previewDevice("iPhone 13")
+            .previewDisplayName("iPhone 13")
+            .ignoresSafeArea()
+    }
+}
+
+#endif
+
