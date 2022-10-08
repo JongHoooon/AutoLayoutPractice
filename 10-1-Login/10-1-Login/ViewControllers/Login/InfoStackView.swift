@@ -29,8 +29,21 @@ final class InfoStackView: UIStackView {
                 .font: UIFont.systemFont(ofSize: 14.0)
             ]
         )
-        $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16.0, height: 0.0))
+        $0.leftView = UIView(frame: CGRect(
+            x: 0,
+            y: 0,
+            width: 16.0,
+            height: 0.0
+        ))
         $0.leftViewMode = .always
+        $0.rightView = UIView(frame: CGRect(
+            x: 0,
+            y: 0,
+            width: 48.0,
+            height: 0.0
+        ))
+        $0.rightViewMode = .always
+        
         $0.backgroundColor = UIColor.loginLightgray
         
         $0.layer.cornerRadius = 8.0

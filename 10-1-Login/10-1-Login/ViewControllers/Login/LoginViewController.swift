@@ -11,8 +11,14 @@ import UIKit
 
 final class LoginViewController: UIViewController {
     
+
+    
     private let hideIcon = UIImage(named: "hide")
     private let showIcon = UIImage(named: "show")
+
+    private lazy var scrollview = UIScrollView().then {
+        $0.backgroundColor = .red
+    }
     
     private lazy var phoneNumberStackView = InfoStackView(
         title: "휴대폰 번호",
@@ -83,6 +89,11 @@ final class LoginViewController: UIViewController {
         checkTextField()
         checkTextFieldInfo()
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true
+        )
+    }
 }
 
 // MARK: - Private
@@ -123,36 +134,42 @@ private extension LoginViewController {
             }
         }
         
+        view.addSubview(scrollview)
+        scrollview.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
         [
             phoneNumberStackView,
             passwordStackView,
             isSecureButton,
             loginButton,
             moveStackView
-        ].forEach { view.addSubview($0) }
-        
+        ].forEach { scrollview.addSubview($0) }
+
         phoneNumberStackView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(34.0)
-            $0.leading.trailing.equalToSuperview().inset(16.0)
+            $0.leading.equalToSuperview().inset(16.0)
+            $0.trailing.equalToSuperview().offset(16.0)
         }
-        
+
         passwordStackView.snp.makeConstraints {
             $0.top.equalTo(phoneNumberStackView.snp.bottom).offset(40.0)
             $0.leading.trailing.equalToSuperview().inset(16.0)
         }
-        
+
         isSecureButton.snp.makeConstraints {
             $0.centerY.equalTo(passwordStackView.textField)
             $0.trailing.equalTo(passwordStackView.textField.snp.trailing).offset(-16.0)
             $0.width.height.equalTo(24.0)
         }
-        
+
         loginButton.snp.makeConstraints {
             $0.top.equalTo(passwordStackView.snp.bottom).offset(66.0)
             $0.leading.trailing.equalToSuperview().inset(16.0)
             $0.height.equalTo(48.0)
         }
-        
+
         moveStackView.snp.makeConstraints {
             $0.top.equalTo(loginButton.snp.bottom).offset(34.0)
             $0.centerX.equalToSuperview()
