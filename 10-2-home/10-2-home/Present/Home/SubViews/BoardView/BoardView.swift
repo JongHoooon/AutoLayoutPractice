@@ -1,5 +1,5 @@
 //
-//  PostView.swift
+//  BoardView.swift
 //  10-2-home
 //
 //  Created by JongHoon on 2022/10/15.
@@ -9,9 +9,21 @@ import Then
 import SnapKit
 import UIKit
 
-final class PostView: UIView {
+final class BoardView: UIView {
     
-    private lazy var PostCollectionView = UICollectionView(
+    private lazy var refreshControl = UIRefreshControl().then {
+        $0.attributedTitle = NSAttributedString(
+            string: "당겨서 새로 고침! 🔥👨‍💻",
+            attributes: [.foregroundColor: UIColor.label]
+        )
+        $0.addTarget(
+            self,
+            action: #selector(refresh),
+            for: .valueChanged
+        )
+    }
+    
+    private lazy var boardCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
     ).then {
@@ -24,20 +36,21 @@ final class PostView: UIView {
         )
         
         $0.collectionViewLayout = layout
-        $0.showsVerticalScrollIndicator = true
+        $0.showsVerticalScrollIndicator = false
         
+        $0.refreshControl = refreshControl
         
         $0.dataSource = self
         $0.delegate = self
         
         $0.register(
-            PostCollectionViewCell.self,
-            forCellWithReuseIdentifier: PostCollectionViewCell.identifier
+            BoardCollectionViewCell.self,
+            forCellWithReuseIdentifier: BoardCollectionViewCell.identifier
         )
         $0.register(
-            PostCollectionReusableView.self,
+            BoardCollectionReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: PostCollectionReusableView.identifier
+            withReuseIdentifier: BoardCollectionReusableView.identifier
         )
     }
     
@@ -56,7 +69,7 @@ final class PostView: UIView {
 
 // MARK: - CollectionView
 
-extension PostView: UICollectionViewDataSource {
+extension BoardView: UICollectionViewDataSource {
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
@@ -69,9 +82,9 @@ extension PostView: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PostCollectionViewCell.identifier,
+            withReuseIdentifier: BoardCollectionViewCell.identifier,
             for: indexPath
-        ) as? PostCollectionViewCell
+        ) as? BoardCollectionViewCell
         
         return cell ?? UICollectionViewCell()
     }
@@ -83,15 +96,15 @@ extension PostView: UICollectionViewDataSource {
     ) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: PostCollectionReusableView.identifier,
+            withReuseIdentifier: BoardCollectionReusableView.identifier,
             for: indexPath
-        ) as? PostCollectionReusableView
+        ) as? BoardCollectionReusableView
         
         return header ?? UICollectionReusableView()
     }
 }
 
-extension PostView: UICollectionViewDelegateFlowLayout {
+extension BoardView: UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
@@ -105,22 +118,28 @@ extension PostView: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         referenceSizeForHeaderInSection section: Int
     ) -> CGSize {
-        return CGSize(width: frame.width, height: 16.0)
+        return CGSize(width: frame.width, height: 170.0)
     }
 }
 
 
 // MARK: - Private
 
-private extension PostView {
+private extension BoardView {
     
     func configureLayout() {
         [
-            PostCollectionView
+            boardCollectionView
         ].forEach { addSubview($0) }
     
-        PostCollectionView.snp.makeConstraints {
+        boardCollectionView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+    }
+    
+    // MARK: - Selector
+
+    @objc func refresh() {
+        refreshControl.endRefreshing()
     }
 }

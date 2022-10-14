@@ -9,7 +9,7 @@ import Then
 import SnapKit
 import UIKit
 
-final class PostCollectionViewCell: UICollectionViewCell {
+final class BoardCollectionViewCell: UICollectionViewCell {
     
     private lazy var postImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
@@ -49,6 +49,10 @@ final class PostCollectionViewCell: UICollectionViewCell {
         $0.layer.cornerRadius = 4.0
     }
     
+    private lazy var separatorView = UIView().then {
+        $0.backgroundColor = .separator.withAlphaComponent(0.3)
+    }
+    
     // MARK: - Lifecycle
 
     override init(frame: CGRect) {
@@ -68,7 +72,7 @@ final class PostCollectionViewCell: UICollectionViewCell {
 
 // MARK: - Private
 
-private extension PostCollectionViewCell {
+private extension BoardCollectionViewCell {
     
     func configureLayout() {
                 
@@ -85,7 +89,8 @@ private extension PostCollectionViewCell {
             postImageView,
             labelStackView,
             memberLabel,
-            stateButton
+            stateButton,
+            separatorView
         ].forEach { addSubview($0) }
         
         postImageView.snp.makeConstraints {
@@ -109,6 +114,12 @@ private extension PostCollectionViewCell {
             $0.leading.equalTo(memberLabel.snp.trailing).offset(8.0)
             $0.width.equalTo(54.0)
             $0.height.equalTo(16.0)
+        }
+        
+        separatorView.snp.makeConstraints {
+            $0.top.equalTo(postImageView.snp.bottom).offset(8.0)
+            $0.leading.trailing.equalToSuperview().inset(16.0)
+            $0.height.equalTo(0.3)
         }
     }
 }

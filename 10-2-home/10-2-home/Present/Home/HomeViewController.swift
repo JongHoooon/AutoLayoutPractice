@@ -11,9 +11,8 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    private lazy var autoSlideView = AutoSlideView()
-    private lazy var categoryView = CategoryView()
-    private lazy var postView = PostView()
+    private lazy var boardView = BoardView()
+    
 
 // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -56,32 +55,18 @@ private extension HomeViewController {
         
         navigationItem.leftBarButtonItem = leftItem
         navigationItem.rightBarButtonItems = [
-            searchBarButton,
-            notificationBarButton
+            notificationBarButton,
+            searchBarButton
         ]
     }
     
     func configureLayout() {
         [
-            autoSlideView,
-            categoryView,
-            postView
+            boardView
         ].forEach { view.addSubview($0) }
-    
-        autoSlideView.snp.makeConstraints {
+        
+        boardView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(28.0)
-        }
-        
-        categoryView.snp.makeConstraints {
-            $0.top.equalTo(autoSlideView.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(96.0)
-        }
-        
-        postView.snp.makeConstraints {
-            $0.top.equalTo(categoryView.snp.bottom).offset(28.0)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
