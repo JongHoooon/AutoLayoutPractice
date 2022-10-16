@@ -101,8 +101,6 @@ extension AutoSlideView: UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         nowPage = Int(scrollView.contentOffset.x) / Int(frame.width)
-        
-        print(nowPage)
     }
 }
 
@@ -112,6 +110,7 @@ extension AutoSlideView: UICollectionViewDelegateFlowLayout {
 
 private extension AutoSlideView {
     func configureLayout() {
+        backgroundColor = UIColor.init(rgb: 0xDBF0FF)
         [
             autoSlideCollectionView
         ].forEach { addSubview($0) }
@@ -141,17 +140,15 @@ private extension AutoSlideView {
         if nowPage == autoSlideTexts.count - 1 {
             autoSlideCollectionView.scrollToItem(
                 at: IndexPath(item: 0, section: 0),
-                at: .right,
+                at: .left,
                 animated: true
             )
             #warning("TODO")// TODO: animation 자연스럽게
             nowPage = 0
-            print(nowPage)
             
             return
         } else {
             nowPage += 1
-            print(nowPage)
             autoSlideCollectionView.scrollToItem(
                 at: IndexPath(
                     item: nowPage, section: 0),
